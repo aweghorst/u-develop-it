@@ -1,4 +1,5 @@
-//Set Up
+//=====================================================
+//SETUP
 const express = require("express");
 const mysql = require("mysql2");
 
@@ -21,28 +22,67 @@ const db = mysql.createConnection(
   },
   console.log("Connected to the election database.")
 );
+
 //====================================================
+//DATABASE QUERIES
 
-//query database to View All Candidates
-// db.query(`SELECT * FROM candidates`, (err, rows) => {
-//   console.log("List of all candidates: ", rows);
-// });
+//query database to View All Candidates -> Display at url
+app.get("/api/candidates", (req, res) => {
+  const sql = `SELECT * FROM candidates`;
 
-//query database to View a Specific Candidate
-// db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   console.log("A Single Candidate: ", row);
-// });
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: rows,
+    });
+  });
+});
+db.query(`SELECT * FROM candidates`, (err, rows) => {
+  console.log("List of all candidates: ", rows);
+});
+
+// query database to get a single candidate -> Display at url
+app.get("/api/candidate/:id", (req, res) => {
+  const sql = `SELECT * FROM candidates WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: row,
+    });
+  });
+});
 
 //query database to Delete a Specific Candidate
-// db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
-//   if (err) {
-//     console.log(err);
-//   }
-//   console.log(result);
-// });
+app.delete("/api/candidate/:id", (req, res) => {
+  const sql = `DELETE FROM candidates WHERE id = ?`;
+  const params = [req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: "Candidate not found",
+      });
+    } else {
+      res.json({
+        message: "successfully deleted",
+        changes: result.affectedRows,
+        id: req.params.id,
+      });
+    }
+  });
+});
 
 //query database to Add a New Candidate
 // const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected)
@@ -57,7 +97,10 @@ const db = mysql.createConnection(
 // });
 
 //======================================================
+//API ROUTES
 
+//======================================================
+//FINALIZE
 // Default response for any other request (Not Found)
 app.use((req, res) => {
   res.status(404).end();
