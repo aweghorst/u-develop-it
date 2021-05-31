@@ -1,3 +1,4 @@
+//Set Up
 const express = require("express");
 const mysql = require("mysql2");
 
@@ -20,13 +21,42 @@ const db = mysql.createConnection(
   },
   console.log("Connected to the election database.")
 );
+//====================================================
 
-// Get request go here
-
-//New db query
+//query database to View All Candidates
 db.query(`SELECT * FROM candidates`, (err, rows) => {
-  console.log(rows);
+  console.log("List of all candidates: ", rows);
 });
+
+//query database to View a Specific Candidate
+// db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log("A Single Candidate: ", row);
+// });
+
+//query database to Delete a Specific Candidate
+// db.query(`DELETE FROM candidates WHERE id = ?`, 1, (err, result) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(result);
+// });
+
+//query database to Add a New Candidate
+// const sql = `INSERT INTO candidates (id, first_name, last_name, industry_connected)
+// VALUES (?,?,?,?)`;
+// const params = [1, "Ronald", "Firbank", 1];
+
+// db.query(sql, params, (err, result) => {
+//   if (err) {
+//     console.log(err);
+//   }
+//   console.log(result);
+// });
+
+//======================================================
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {
