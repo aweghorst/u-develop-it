@@ -24,9 +24,9 @@ const db = mysql.createConnection(
 //====================================================
 
 //query database to View All Candidates
-db.query(`SELECT * FROM candidates`, (err, rows) => {
-  console.log("List of all candidates: ", rows);
-});
+// db.query(`SELECT * FROM candidates`, (err, rows) => {
+//   console.log("List of all candidates: ", rows);
+// });
 
 //query database to View a Specific Candidate
 // db.query(`SELECT * FROM candidates WHERE id = 1`, (err, row) => {
